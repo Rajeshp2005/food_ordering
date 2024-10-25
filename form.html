@@ -128,7 +128,7 @@
     <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
     <script>
       (function () {
-        emailjs.init("vJPwKBaNTkMqDJTW_"); // Replace with your EmailJS user_id
+        emailjs.init("vJPwKBaNTkMqDJTW_"); 
       })();
 
       function sendOrder() {
@@ -146,7 +146,7 @@
           area_location: area,
           food_item: food,
           quantity: quantity,
-          admin_email: "imrajesh2005@gmail.com", // Replace with admin's email
+          admin_email: "imrajesh2005@gmail.com", 
         };
 
         emailjs
@@ -207,7 +207,7 @@
         <label for="quantity">Quantity:</label>
         <input type="number" id="quantity" name="quantity" min="1" required />
 
-        <button type="submit" onclick="sendOrder()">Place Order</button>
+        <button type="button" onclick="sendOrder()">Place Order</button>
       </form>
       <p id="message"></p>
     </div>

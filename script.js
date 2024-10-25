@@ -8,7 +8,4 @@ closeIcon.addEventListener('click',()=>{
   headerContent.classList.remove('menu-open');
 })
 
-(function() {
-  emailjs.init("vJPwKBaNTkMqDJTW_"); // Replace with your EmailJS user_id
-})();
 
