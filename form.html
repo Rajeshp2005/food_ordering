@@ -1,215 +1,316 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Food Ordering Form</title>
-    <style>
-      /* CSS styling */
-      body {
-        font-family: Arial, sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100vw;
-        height: 100vh;
-        background: url("images/foodmain1.jpg");
-        background-position: top center;
-        background-size: 95% 100%;
-        background-repeat: no-repeat;
-        animation: slideshow 30s ease-in-out alternate infinite;
-        margin: 0;
-        overflow: hidden;
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Food Ordering Form</title>
+  <style>
+    /* CSS styling */
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100vw;
+      height: 100vh;
+      background: url("images/foodmain1.jpg");
+      background-position: top center;
+      background-size: 95% 100%;
+      background-repeat: no-repeat;
+      animation: slideshow 30s ease-in-out alternate infinite;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    @keyframes slideshow {
+      0% {
+        background-image: url("images/foodmain1.jpg");
       }
-      @keyframes slideshow {
-  0% {
-    background-image: url("images/foodmain1.jpg");
-  }
-  25% {
-    background-image: url("images/foodmain4.jpg");
-  }
-  50% {
-    background-image: url("images/foodmain5.jpg");
-  }
-  75% {
-    background-image: url("images/foodmain6.jpg");
-  }
-  100% {
-    background-image: url("images/foodmain5.jpg");
-  }
+      25% {
+        background-image: url("images/foodmain4.jpg");
+      }
+      50% {
+        background-image: url("images/foodmain5.jpg");
+      }
+      75% {
+        background-image: url("images/foodmain6.jpg");
+      }
+      100% {
+        background-image: url("images/foodmain5.jpg");
+      }
+    }
+
+    .container {
+      background-color: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+      width: 320px;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    h2 {
+      color: white;
+      margin-bottom: 20px;
+      animation: slideIn 0.7s ease-in-out;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      color: aquamarine;
+      font-weight: 600;
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      border: 1px solid #dddddd;
+      border-radius: 4px;
+      animation: fadeUp 0.8s ease;
+    }
+
+    button {
+      background-color: #ff6b6b;
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #ff4747;
+    }
+
+    /* Alert styles */
+    .alert {
+      display: none;
+      padding: 15px;
+      margin: 20px auto; 
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      position: fixed;
+      left: 50%; 
+      transform: translateX(-50%); 
+      animation: fadeInFromTop 0.5s ease forwards;  
+      z-index: 1000; 
+    }
+
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInFromTop {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px); 
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);  
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-20px);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes popIn {
+      0% {
+        transform: scale(0);
+      }
+      80% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    (function () {
+      emailjs.init("vJPwKBaNTkMqDJTW_"); 
+    })();
+
+    function sendOrder(event) {
+  event.preventDefault(); // Prevent the form from submitting
+
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const phone = document.getElementById("phone").value;
+
+  // Get the selected area
+  const areaSelect = document.getElementById("area");
+  const area = areaSelect.value === "custom" ? document.getElementById("customArea").value : areaSelect.value;
+
+  // Get the selected food item
+  const foodSelect = document.getElementById("food");
+  const food = foodSelect.value === "custom" ? document.getElementById("customFood").value : foodSelect.value;
+
+  const quantity = document.getElementById("quantity").value;
+
+  const emailParams = {
+    from_name: name,
+    from_email: email,
+    contact_number: phone,
+    area_location: area,
+    food_item: food,
+    quantity: quantity,
+    admin_email: "imrajesh2005@gmail.com", 
+  };
+
+  emailjs
+    .send("orderfood", "template_ozjmqdf", emailParams)
+    .then((response) => {
+      showAlert(`Thank you, ${name}! Your order for ${quantity} ${food} has been placed.`, true);
+      document.getElementById("orderForm").reset();
+    })
+    .catch((error) => {
+      showAlert("Failed to place order.", false);
+      console.error("Failed to send email:", error);
+    });
 }
-      .container {
-        background-color:rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(4px);
-        padding: 30px;
-        border-radius: 8px;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-        width: 320px;
-        text-align: center;
-        animation: fadeIn 1s ease-in-out;
-      }
-      h2 {
-        color: white;
-        margin-bottom: 20px;
-        animation: slideIn 0.7s ease-in-out;
-      }
-      label {
-        display: block;
-        margin-top: 15px;
-        color: aquamarine;
-        font-weight:600 ;
-      }
-      input,
-      select,
-      button {
-        width: 100%;
-        padding: 10px;
-        margin-top: 5px;
-        margin-bottom: 10px;
-        border: 1px solid #dddddd;
-        border-radius: 4px;
-        animation: fadeUp 0.8s ease;
-      }
-      button {
-        background-color: #ff6b6b;
-        color: #ffffff;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-      button:hover {
-        background-color: #ff4747;
-      }
-      p#message {
-        color: #abff6b;
-        font-weight: bold;
-        margin-top: 10px;
-        animation: popIn 0.5s ease;
-      }
-      /* Animations */
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-      @keyframes slideIn {
-        from {
-          transform: translateY(-20px);
-        }
-        to {
-          transform: translateY(0);
-        }
-      }
-      @keyframes fadeUp {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      @keyframes popIn {
-        0% {
-          transform: scale(0);
-        }
-        80% {
-          transform: scale(1.1);
-        }
-        100% {
-          transform: scale(1);
-        }
-      }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-    <script>
-      (function () {
-        emailjs.init("vJPwKBaNTkMqDJTW_"); 
-      })();
 
-      function sendOrder() {
-        const name = document.getElementById("name").value;
-        const email = document.getElementById("email").value;
-        const phone = document.getElementById("phone").value;
-        const area = document.getElementById("area").value;
-        const food = document.getElementById("food").value;
-        const quantity = document.getElementById("quantity").value;
 
-        const emailParams = {
-          from_name: name,
-          from_email: email,
-          contact_number: phone,
-          area_location: area,
-          food_item: food,
-          quantity: quantity,
-          admin_email: "imrajesh2005@gmail.com", 
-        };
+    function showAlert(message, isSuccess) {
+      const alertBox = document.createElement("div");
+      alertBox.className = `alert ${isSuccess ? 'alert-success' : 'alert-error'}`;
+      alertBox.textContent = message;
 
-        emailjs
-          .send("orderfood", "template_ozjmqdf", emailParams)
-          .then((response) => {
-            document.getElementById(
-              "message"
-            ).innerText = `Thank you, ${name}! Your order for ${quantity} ${food} has been placed.`;
-            document.getElementById("orderForm").reset();
-          })
-          .catch((error) => {
-            document.getElementById("message").innerText =
-              "Failed to place order.";
-            console.error("Failed to send email:", error);
-          });
+      document.body.appendChild(alertBox);
+      alertBox.style.display = "block";
+
+     
+      setTimeout(() => {
+        alertBox.style.display = "none";
+        document.body.removeChild(alertBox); 
+      }, 3000);
+    }
+
+    function toggleCustomArea() {
+      const areaSelect = document.getElementById("area");
+      const customAreaInput = document.getElementById("customArea");
+      if (areaSelect.value === "custom") {
+        customAreaInput.style.display = "block";
+      } else {
+        customAreaInput.style.display = "none";
       }
-    </script>
-  </head>
-  <body>
-    <div class="container">
-      <h2>Order Your Favorite Food</h2>
-      <form id="orderForm">
-        <label for="name">Your Name:</label>
-        <input type="text" id="name" name="name" required />
+    }
 
-        <label for="email">Your Email:</label>
-        <input type="email" id="email" name="email" required />
+    function toggleCustomFood() {
+      const foodSelect = document.getElementById("food");
+      const customFoodInput = document.getElementById("customFood");
+      if (foodSelect.value === "custom") {
+        customFoodInput.style.display = "block";
+      } else {
+        customFoodInput.style.display = "none";
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h2>Order Your Favorite Food</h2>
+    <form id="orderForm" onsubmit="sendOrder(event)">
+      <label for="name">Your Name:</label>
+      <input type="text" id="name" name="name" required />
 
-        <label for="phone">Contact Number:</label>
-        <input
-          type="tel"
-          id="phone"
-          name="phone"
-          pattern="[0-9]{10}"
-          placeholder="10-digit number"
-          required
-        />
+      <label for="email">Your Email:</label>
+      <input type="email" id="email" name="email" required />
 
-        <label for="area">City Area (Kathmandu):</label>
-        <select id="area" name="area" required>
-          <option value="">--Select Area--</option>
-          <option value="Thamel">Thamel</option>
-          <option value="Boudha">Boudha</option>
-          <option value="Lalitpur">Lalitpur</option>
-          <option value="Bhaktapur">Bhaktapur</option>
-          <option value="Baneshwor">Baneshwor</option>
-        </select>
+      <label for="phone">Contact Number:</label>
+      <input
+        type="tel"
+        id="phone"
+        name="phone"
+        pattern="[0-9]{10}"
+        placeholder="10-digit number"
+        required
+      />
 
-        <label for="food">Select Food Item:</label>
-        <select id="food" name="food" required>
-          <option value="">--Select--</option>
-          <option value="Pizza">Pizza</option>
-          <option value="Burger">Burger</option>
-          <option value="Pasta">Pasta</option>
-          <option value="Sushi">Sushi</option>
-        </select>
+      <label for="area">City Area (Kathmandu):</label>
+      <select id="area" name="area" required onchange="toggleCustomArea()">
+        <option value="">--Select Area--</option>
+        <option value="Thamel">Thamel</option>
+        <option value="Boudha">Boudha</option>
+        <option value="Lalitpur">Lalitpur</option>
+        <option value="Bhaktapur">Bhaktapur</option>
+        <option value="Baneshwor">Baneshwor</option>
+        <option value="custom">Other (Specify)</option>
+      </select>
+      <input
+        type="text"
+        id="customArea"
+        name="customArea"
+        placeholder="Enter custom area"
+        style="display:none;"
+      />
 
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" name="quantity" min="1" required />
+      <label for="food">Select Food Item:</label>
+      <select id="food" name="food" required onchange="toggleCustomFood()">
+        <option value="">--Select--</option>
+        <option value="Pizza">Pizza</option>
+        <option value="Burger">Burger</option>
+        <option value="Pasta">Pasta</option>
+        <option value="Sushi">Sushi</option>
+        <option value="custom">Other (Specify)</option>
+      </select>
+      <input
+        type="text"
+        id="customFood"
+        name="customFood"
+        placeholder="Enter custom food item"
+        style="display:none;"
+      />
 
-        <button type="button" onclick="sendOrder()">Place Order</button>
-      </form>
-      <p id="message"></p>
-    </div>
-  </body>
+      <label for="quantity">Quantity:</label>
+      <input type="number" id="quantity" name="quantity" min="1" required />
+
+      <button type="submit">Place Order</button>
+    </form>
+    <p id="message"></p>
+  </div>
+</body>
 </html>
