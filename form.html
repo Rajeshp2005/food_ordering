@@ -208,10 +208,12 @@
     .then((response) => {
       showAlert(`Thank you, ${name}! Your order for ${quantity} ${food} has been placed.`, true);
       document.getElementById("orderForm").reset();
+      window.location="index.html";
     })
     .catch((error) => {
       showAlert("Failed to place order.", false);
       console.error("Failed to send email:", error);
+      window.location="index.html";
     });
 }
 
